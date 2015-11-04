@@ -1,0 +1,15 @@
+#! /bin/bash
+
+if [ $# != 1 ]; then	
+	echo "Usage: $0 <Size in MB>"
+	echo "Example：use ‘$0 2048’ to create a 2GB ext4 filesystem in /dev/shm"
+	exit
+fi
+
+dd if=/dev/zero of=/dev/shm/datfile-rand-to-void-rep bs=1MB count=$1
+losetup /dev/loop7 /dev/shm/datfile-rand-to-void-rep
+losetup -a
+mkfs.ext4 /dev/loop7
+mkdir -p  /mnt/ram
+mount -t ext4 /dev/loop7 /mnt/ram
+df -hT
